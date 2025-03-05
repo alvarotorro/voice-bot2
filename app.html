@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Speech API Demo</title>
+    <title>Copilot Speech Demo</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Web Speech API Demo</h1>
-    <button id="start-btn">Start Conversation</button>
-    <p id="transcript">Waiting for input...</p>
+    <div class="container">
+        <h1>PLG Voice Bot Prototype</h1>
+        <div class="chat-box">
+            <p id="transcript">Speak to a costumer</p>
+            <button id="start-btn">
+                🎙️
+            </button>
+        </div>
+    </div>
 
     <script>
         let counter = 0;
@@ -32,7 +38,7 @@
                 
                 recognition.onresult = function(event) {
                     const transcript = event.results[0][0].transcript;
-                    document.getElementById("transcript").textContent = "You said: " + transcript;
+                    document.getElementById("transcript").textContent = transcript;
                     setTimeout(() => {
                         if (counter < conversation.length) {
                             speak(conversation[counter]);
