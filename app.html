@@ -9,8 +9,9 @@
 <body>
     <div class="container">
         <h1>PLG Voice Bot Prototype</h1>
-        <div class="chat-box">
-            <p id="transcript">Speak to a costumer</p>
+        <div class="chat-container" id="chat-container"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Talk to a costumer..." disabled>
             <button id="start-btn">
                 🎙️
             </button>
@@ -38,9 +39,10 @@
                 
                 recognition.onresult = function(event) {
                     const transcript = event.results[0][0].transcript;
-                    document.getElementById("transcript").textContent = transcript;
+                    addMessage(transcript, 'user');
                     setTimeout(() => {
                         if (counter < conversation.length) {
+                            addMessage(conversation[counter], 'agent');
                             speak(conversation[counter]);
                             counter++;
                         } else {
@@ -61,6 +63,15 @@
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
             speechSynthesis.speak(utterance);
+        }
+
+        function addMessage(text, sender) {
+            const chatContainer = document.getElementById("chat-container");
+            const message = document.createElement("div");
+            message.classList.add("message", sender);
+            message.textContent = text;
+            chatContainer.appendChild(message);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         document.getElementById("start-btn").addEventListener("click", function() {
