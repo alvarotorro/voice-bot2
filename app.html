@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Speech API Demo</title>
+</head>
+<body>
+    <h1>Web Speech API Demo</h1>
+    <button id="start-btn">Start Conversation</button>
+    <p id="transcript"></p>
+
+    <script>
+        let counter = 0;
+        const conversation = [
+            "Sorry, It's very busy at the moment.",
+            "We're just dealing with some issues.",
+            "Integration has been a nightmare in the past. Our systems just don't seem to work well together.",
+            "We've tried similar services, and they didn't work out. How does your solution handle data encryption at rest and in transit?",
+            "Our budget is a bit tight right now, and security is always a big concern for us. The interface also wasn't intuitive for our team last time; we need something user-friendly."
+        ];
+
+        let recognition;
+        
+        function initRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById("transcript").textContent = "You said: " + transcript;
+                    setTimeout(() => {
+                        if (counter < conversation.length) {
+                            speak(conversation[counter]);
+                            counter++;
+                        } else {
+                            console.log("Conversation ended.");
+                        }
+                    }, 1000);
+                };
+                
+                recognition.onerror = function(event) {
+                    console.log("Speech recognition error: ", event.error);
+                };
+            } else {
+                console.log('Speech recognition not supported in this browser.');
+            }
+        }
+        
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            speechSynthesis.speak(utterance);
+        }
+
+        document.getElementById("start-btn").addEventListener("click", function() {
+            if (!recognition) {
+                initRecognition();
+            }
+            recognition.start();
+        });
+    </script>
+</body>
+</html>
